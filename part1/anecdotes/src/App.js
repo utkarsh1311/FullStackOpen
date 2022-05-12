@@ -12,18 +12,31 @@ const App = () => {
 	];
 
 	const [selected, setSelected] = useState(0);
+	const [votes, setVotes] = useState([0, 0, 0, 0, 0, 0, 0]);
+
+	const updateVotes = () => {
+		let newVotes = [...votes];
+		newVotes[selected] += 1;
+		console.log(newVotes);
+		setVotes(newVotes);
+	};
+
 	const updateAnecdotes = () => {
-		let randomNumber = Math.floor(Math.random() * anecdotes.length);
-		console.log(randomNumber);
-		setSelected(randomNumber);
-	}
+		let newNumber = selected;
+		do {
+			newNumber = Math.floor(Math.random() * anecdotes.length);
+		} while (newNumber === selected);
+
+		console.log(newNumber);
+		setSelected(newNumber);
+	};
 
 	return (
 		<div>
 			<div>{anecdotes[selected]}</div>
-			<button onClick={updateAnecdotes}>
-				next anecdotes
-			</button>
+			<p>has {votes[selected]} votes</p>
+			<button onClick={updateVotes}>vote</button>
+			<button onClick={updateAnecdotes}>next anecdotes</button>
 		</div>
 	);
 };
