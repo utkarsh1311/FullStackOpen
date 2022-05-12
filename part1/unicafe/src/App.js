@@ -8,11 +8,19 @@ const Title = ({ text }) => {
 	return <h1>{text}</h1>;
 };
 
+const StatisticLine = ({ text, value }) => {
+	return (
+		<p>
+			{text} {value}
+		</p>
+	);
+};
+
 const Statistics = ({ good, neutral, bad }) => {
 	if (good === 0 && neutral === 0 && bad === 0) {
 		return <p>no feedback given</p>;
 	}
-	
+
 	let totalFeedback = good + neutral + bad;
 	let average = 0;
 	if (good !== 0) {
@@ -25,12 +33,11 @@ const Statistics = ({ good, neutral, bad }) => {
 
 	return (
 		<div>
-			<p>good {good}</p>
-			<p>neutral {neutral}</p>
-			<p>bad {bad}</p>
-			<p>all {totalFeedback}</p>
-			<p>average {average}</p>
-			<p>positive {positiveFeedback} %</p>
+			<StatisticLine text="good" value={good} />
+			<StatisticLine text="neutral" value={neutral} />
+			<StatisticLine text="bad" value={bad} />
+			<StatisticLine text="average" value={average} />
+			<StatisticLine text="positive" value={positiveFeedback} />
 		</div>
 	);
 };
