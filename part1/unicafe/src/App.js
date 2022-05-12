@@ -9,11 +9,24 @@ const Title = ({ text }) => {
 };
 
 const Results = ({ good, neutral, bad }) => {
+	let totalFeedback = good + neutral + bad;
+	let average = 0;
+	if (good != 0) {
+		average = (good - bad) / totalFeedback;
+	}
+	let positiveFeedback = 0;
+	if (good !== 0) {
+		positiveFeedback = (good / totalFeedback) * 100;
+	}
+
 	return (
 		<div>
 			<p>good {good}</p>
 			<p>neutral {neutral}</p>
 			<p>bad {bad}</p>
+			<p>all {totalFeedback}</p>
+			<p>average {average}</p>
+			<p>positive {positiveFeedback} %</p>
 		</div>
 	);
 };
