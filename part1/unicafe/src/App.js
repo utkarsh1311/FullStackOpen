@@ -10,9 +10,10 @@ const Title = ({ text }) => {
 
 const StatisticLine = ({ text, value }) => {
 	return (
-		<p>
-			{text} {value}
-		</p>
+		<tr>
+			<td>{text}</td>
+			<td>{value}</td>
+		</tr>
 	);
 };
 
@@ -23,7 +24,7 @@ const Statistics = ({ good, neutral, bad }) => {
 
 	let totalFeedback = good + neutral + bad;
 	let average = 0;
-	if (good !== 0) {
+	if (good - bad !== 0) {
 		average = (good - bad) / totalFeedback;
 	}
 	let positiveFeedback = 0;
