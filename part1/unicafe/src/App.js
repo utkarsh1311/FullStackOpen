@@ -8,10 +8,14 @@ const Title = ({ text }) => {
 	return <h1>{text}</h1>;
 };
 
-const Results = ({ good, neutral, bad }) => {
+const Statistics = ({ good, neutral, bad }) => {
+	if (good === 0 && neutral === 0 && bad === 0) {
+		return <p>no feedback given</p>;
+	}
+	
 	let totalFeedback = good + neutral + bad;
 	let average = 0;
-	if (good != 0) {
+	if (good !== 0) {
 		average = (good - bad) / totalFeedback;
 	}
 	let positiveFeedback = 0;
@@ -43,7 +47,7 @@ const App = () => {
 			<Button onClick={() => setNeutral(neutral + 1)} text="neutral" />
 			<Button onClick={() => setBad(bad + 1)} text="bad" />
 			<Title text="statistics" />
-			<Results good={good} neutral={neutral} bad={bad} />
+			<Statistics good={good} neutral={neutral} bad={bad} />
 		</div>
 	);
 };
