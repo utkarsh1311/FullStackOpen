@@ -1,12 +1,7 @@
 import { useState } from "react";
 
 function App() {
-	const [persons, setPersons] = useState([
-		{ name: "Arto Hellas", number: "040-123456", id: 1 },
-		{ name: "Ada Lovelace", number: "39-44-5323523", id: 2 },
-		{ name: "Dan Abramov", number: "12-43-234345", id: 3 },
-		{ name: "Mary Poppendieck", number: "39-23-6423122", id: 4 },
-	]);
+	const [persons, setPersons] = useState([]);
 
 	let [listToShow, setListToShow] = useState(persons);
 	const [newName, setNewName] = useState("");
@@ -18,7 +13,7 @@ function App() {
 		console.log(filterName);
 		setSearchName(filterName);
 		let filteredPerson = persons.filter((person) =>
-			person.name.startsWith(filterName)
+			person.name.toLowerCase().startsWith(filterName.toLowerCase())
 		);
 		setListToShow(filteredPerson);
 	};
@@ -28,6 +23,7 @@ function App() {
 		let newPerson = {
 			name: newName,
 			number: newNumber,
+			id: persons.length + 1,
 		};
 		if (!persons.some((obj) => obj.name === newPerson.name)) {
 			setPersons(persons.concat(newPerson));
@@ -83,7 +79,7 @@ function App() {
 			<h2>Numbers</h2>
 			<div>
 				{listToShow.map((person) => (
-					<p key={person.name}>
+					<p key={person.id}>
 						{person.name} {person.number}
 					</p>
 				))}
