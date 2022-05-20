@@ -1,21 +1,29 @@
 import { useState } from "react";
 
 function App() {
-	const [persons, setPersons] = useState([{ name: "Arto Hellas" }]);
+	const [persons, setPersons] = useState([{}]);
 	const [newName, setNewName] = useState("");
+	const [newNumber, setNewNumber] = useState("");
 
-	const addNewPerson = (event) => {
+	const addNewContact = (event) => {
 		event.preventDefault();
 		let newPerson = {
 			name: newName,
+			number: newNumber,
 		};
-		if (!persons.some(obj => obj.name === newPerson.name)) {
+		if (!persons.some((obj) => obj.name === newPerson.name)) {
 			setPersons(persons.concat(newPerson));
 			setNewName("");
+			setNewNumber("");
 		} else {
 			alert(`${newPerson.name} already added to the phonebook`);
 			setNewName("");
 		}
+	};
+
+	const handleNewNumber = (event) => {
+		console.log(event.target.value);
+		setNewNumber(event.target.value);
 	};
 
 	const handleNewPerson = (event) => {
@@ -25,12 +33,19 @@ function App() {
 	return (
 		<div>
 			<h2>Phonebook</h2>
-			<form onSubmit={addNewPerson}>
+			<form onSubmit={addNewContact}>
 				<div>
 					name:{" "}
 					<input
 						value={newName}
 						onChange={handleNewPerson}
+					/>
+				</div>
+				<div>
+					number:{" "}
+					<input
+						value={newNumber}
+						onChange={handleNewNumber}
 					/>
 				</div>
 				<div>
@@ -40,7 +55,9 @@ function App() {
 			<h2>Numbers</h2>
 			<div>
 				{persons.map((person) => (
-					<p key={person.name}>{person.name}</p>
+					<p key={person.name}>
+						{person.name} {person.number}
+					</p>
 				))}
 			</div>
 		</div>
