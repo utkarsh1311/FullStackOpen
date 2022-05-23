@@ -1,17 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
-
-
+import axios from "axios";
 
 function App() {
 	const [persons, setPersons] = useState([]);
-
 	let [listToShow, setListToShow] = useState(persons);
 	const [newName, setNewName] = useState("");
 	const [newNumber, setNewNumber] = useState("");
 	const [searchName, setSearchName] = useState("");
+
+	useEffect(() => {
+		console.log("In use effect");
+		axios.get("http://localhost:3001/persons").then((response) => {
+			setPersons(response.data);
+			setListToShow(response.data);
+		});
+	}, []);
 
 	const showSearchResults = (event) => {
 		let filterName = event.target.value;
