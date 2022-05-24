@@ -1,17 +1,22 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const DisplayCountries = ({ countriesToShow }) => {
-	console.log(countriesToShow);
-	if (countriesToShow.length >= 10) {
-		return <p>Too many results</p>;
-	} else if (countriesToShow.length !== 1) {
-		return countriesToShow.map(country => (
-			<p key={country.population}>{country.name.official}</p>
-		));
-	}
+const CompactCountryDisplay = ({ country }) => {
+	const [show, setShow] = useState(false);
 
-	let country = countriesToShow[0];
+	if (!show) {
+		return (
+			<div>
+				{country.name.official}
+				{""}
+				<button onClick={() => setShow(true)}>show</button>
+			</div>
+		);
+	}
+	return <CountryCard country={country} />;
+};
+
+const CountryCard = ({ country }) => {
 	return (
 		<>
 			<h1>{country.name.official}</h1>
@@ -29,6 +34,20 @@ const DisplayCountries = ({ countriesToShow }) => {
 			/>
 		</>
 	);
+};
+
+const DisplayCountries = ({ countriesToShow }) => {
+	console.log(countriesToShow);
+	if (countriesToShow.length >= 10) {
+		return <p>Too many results</p>;
+	} else if (countriesToShow.length !== 1) {
+		return countriesToShow.map(country => (
+			<CompactCountryDisplay key={country.area} country={country} />
+		));
+	}
+
+	let country = countriesToShow[0];
+	return <CountryCard country={country} />;
 };
 
 function App() {
