@@ -26,8 +26,9 @@ function App() {
 	return (
 		<div>
 			<form onSubmit={e => e.preventDefault()}>
-				find countries
+				<label htmlFor="country-search">find countries</label>
 				<input
+					id="country-search"
 					type="text"
 					value={searchCountries}
 					onChange={handleCountrySearch}
