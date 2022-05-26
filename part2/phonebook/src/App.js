@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
-import axios from "axios";
+import personService from "./services/persons";
 
 function App() {
 	const [persons, setPersons] = useState([]);
@@ -13,9 +13,9 @@ function App() {
 
 	useEffect(() => {
 		console.log("In use effect");
-		axios.get("http://localhost:3001/persons").then((response) => {
-			setPersons(response.data);
-			setListToShow(response.data);
+		personService.getAllPersons((returnedPerson) => {
+			setPersons(returnedPerson);
+			setListToShow(returnedPerson);
 		});
 	}, []);
 
@@ -36,11 +36,14 @@ function App() {
 			number: newNumber,
 			id: persons.length + 1,
 		};
+
 		if (!persons.some((obj) => obj.name === newPerson.name)) {
-			setPersons(persons.concat(newPerson));
-			setListToShow(listToShow.concat(newPerson));
-			setNewName("");
-			setNewNumber("");
+			personService.addNewPerson(newPerson).then((returnedPerson) => {
+				setPersons(returnedPerson);
+				setListToShow(listToShow.concat(newPerson));
+				setNewName("");
+				setNewNumber("");
+			});
 		} else {
 			alert(`${newPerson.name} already added to the phonebook`);
 			setNewName("");
@@ -48,12 +51,10 @@ function App() {
 	};
 
 	const handleNewNumber = (event) => {
-		console.log(event.target.value);
 		setNewNumber(event.target.value);
 	};
 
 	const handleNewPerson = (event) => {
-		console.log(event.target.value);
 		setNewName(event.target.value);
 	};
 	return (
