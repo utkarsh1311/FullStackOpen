@@ -1,8 +1,12 @@
-const Person = ({ id, name, number }) => {
+
+const Person = ({ id, name, number, deleteContact }) => {
 	return (
-		<p key={id}>
-			{name} {number}
-		</p>
+		<>
+			<p>
+				{name} {number}
+			</p>
+			<button onClick={() => deleteContact(id)}>delete</button>
+		</>
 	);
 };
 

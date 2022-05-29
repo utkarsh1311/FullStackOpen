@@ -1,23 +1,26 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
-import personService from "./services/persons";
+import personService from "./services/personsService";
 
 function App() {
 	const [persons, setPersons] = useState([]);
-	let [listToShow, setListToShow] = useState(persons);
+	const [listToShow, setListToShow] = useState(persons);
 	const [newName, setNewName] = useState("");
 	const [newNumber, setNewNumber] = useState("");
 	const [searchName, setSearchName] = useState("");
 
 	useEffect(() => {
 		console.log("In use effect");
-		personService.getAllPersons((returnedPerson) => {
+		personService.getAllPersons().then((returnedPerson) => {
 			setPersons(returnedPerson);
 			setListToShow(returnedPerson);
 		});
 	}, []);
+
+	// const getAllContacts = () => {};
 
 	const showSearchResults = (event) => {
 		let filterName = event.target.value;
@@ -34,19 +37,19 @@ function App() {
 		let newPerson = {
 			name: newName,
 			number: newNumber,
-			id: persons.length + 1,
 		};
 
-		if (!persons.some((obj) => obj.name === newPerson.name)) {
+		if (persons.some((person) => person.name === newName)) {
+			alert(`${newPerson.name} already added to the phonebook`);
+			setNewName("");
+			setNewNumber("");
+		} else {
 			personService.addNewPerson(newPerson).then((returnedPerson) => {
-				setPersons(returnedPerson);
-				setListToShow(listToShow.concat(newPerson));
+				setPersons(persons.concat(returnedPerson));
+				setListToShow(listToShow.concat(returnedPerson));
 				setNewName("");
 				setNewNumber("");
 			});
-		} else {
-			alert(`${newPerson.name} already added to the phonebook`);
-			setNewName("");
 		}
 	};
 
@@ -57,6 +60,15 @@ function App() {
 	const handleNewPerson = (event) => {
 		setNewName(event.target.value);
 	};
+
+	const deleteContact = (id) => {
+		let newList = persons.filter((person) => person.id !== id);
+		personService.removePerson(id).then((response) => {
+			setPersons(newList);
+			setListToShow(newList);
+		});
+	};
+
 	return (
 		<div>
 			<h2>Phonebook</h2>
@@ -73,7 +85,10 @@ function App() {
 				handleNewNumber={handleNewNumber}
 			/>
 			<h2>Numbers</h2>
-			<Persons list={listToShow} />
+			<Persons
+				deleteContact={deleteContact}
+				list={listToShow}
+			/>
 		</div>
 	);
 }
