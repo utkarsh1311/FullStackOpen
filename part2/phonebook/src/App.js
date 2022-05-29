@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
@@ -61,12 +60,14 @@ function App() {
 		setNewName(event.target.value);
 	};
 
-	const deleteContact = (id) => {
-		let newList = persons.filter((person) => person.id !== id);
-		personService.removePerson(id).then((response) => {
-			setPersons(newList);
-			setListToShow(newList);
-		});
+	const deleteContact = (id, name) => {
+		if (window.confirm(`Delete ${name} ?`)) {
+			let newList = persons.filter((person) => person.id !== id);
+			personService.removePerson(id).then((response) => {
+				setPersons(newList);
+				setListToShow(newList);
+			});
+		}
 	};
 
 	return (

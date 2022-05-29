@@ -1,11 +1,10 @@
-
 const Person = ({ id, name, number, deleteContact }) => {
 	return (
 		<>
-			<p>
+			<div>
 				{name} {number}
-			</p>
-			<button onClick={() => deleteContact(id)}>delete</button>
+				<button onClick={() => deleteContact(id, name)}>delete</button>
+			</div>
 		</>
 	);
 };
