@@ -1,4 +1,4 @@
-const PersonForm = (props) => {
+const PersonForm = props => {
 	return (
 		<form onSubmit={props.addNewContact}>
 			<div>

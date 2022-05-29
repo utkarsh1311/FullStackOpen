@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
@@ -14,80 +13,80 @@ function App() {
 
 	useEffect(() => {
 		console.log("In use effect");
-		personService.getAllPersons().then((returnedPerson) => {
+		personService.getAllPersons().then(returnedPerson => {
 			setPersons(returnedPerson);
 			setListToShow(returnedPerson);
 		});
 	}, []);
 
-	const showSearchResults = (event) => {
+	const showSearchResults = event => {
 		let filterName = event.target.value;
-		console.log(filterName);
 		setSearchName(filterName);
-		let filteredPerson = persons.filter((person) =>
+		let filteredPerson = persons.filter(person =>
 			person.name.toLowerCase().startsWith(filterName.toLowerCase())
 		);
 		setListToShow(filteredPerson);
 	};
 
-	const addNewContact = (event) => {
+	const resetDetails = () => {
+		setNewName("");
+		setNewNumber("");
+	};
+
+	const addNewContact = event => {
 		event.preventDefault();
 		let newPerson = {
 			name: newName,
 			number: newNumber,
 		};
 
-		if (persons.some((person) => person.name === newName)) {
+		if (persons.some(person => person.name === newName)) {
 			if (
 				window.confirm(
 					`${newPerson.name} already added to the phonebook, replace the old number with the new one?`
 				)
 			) {
 				let requiredPerson = persons.filter(
-					(person) => person.name === newName
+					person => person.name === newName
 				);
-				console.log(requiredPerson);
 				let personId = requiredPerson[0].id;
-				console.log(personId);
 				personService
 					.updateNumber(personId, newPerson)
-					.then((returnedPerson) => {
+					.then(returnedPerson => {
 						setPersons(
-							persons.map((person) =>
+							persons.map(person =>
 								person.id !== personId ? person : returnedPerson
 							)
 						);
 						setListToShow(
-							listToShow.map((person) =>
+							listToShow.map(person =>
 								person.id !== personId ? person : returnedPerson
 							)
 						);
-						setNewNumber("");
-						setNewName("");
+						resetDetails();
 					});
 			}
 		} else {
-			personService.addNewPerson(newPerson).then((returnedPerson) => {
+			personService.addNewPerson(newPerson).then(returnedPerson => {
 				setPersons(persons.concat(returnedPerson));
 				setListToShow(listToShow.concat(returnedPerson));
-				setNewName("");
-				setNewNumber("");
+				resetDetails();
 			});
 		}
 	};
 
-	const handleNewNumber = (event) => {
+	const handleNewNumber = event => {
 		setNewNumber(event.target.value);
 	};
 
-	const handleNewPerson = (event) => {
+	const handleNewPerson = event => {
 		setNewName(event.target.value);
 	};
 
 	const deleteContact = (id, name) => {
 		if (window.confirm(`Delete ${name} ?`)) {
-			let newList = persons.filter((person) => person.id !== id);
-			personService.removePerson(id).then((response) => {
+			let newList = persons.filter(person => person.id !== id);
+			personService.removePerson(id).then(response => {
 				setPersons(newList);
 				setListToShow(newList);
 			});
