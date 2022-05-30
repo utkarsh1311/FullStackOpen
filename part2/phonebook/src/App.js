@@ -46,25 +46,21 @@ function App() {
 					`${newPerson.name} already added to the phonebook, replace the old number with the new one?`
 				)
 			) {
-				let requiredPerson = persons.filter(
-					person => person.name === newName
-				);
+				let requiredPerson = persons.filter(person => person.name === newName);
 				let personId = requiredPerson[0].id;
-				personService
-					.updateNumber(personId, newPerson)
-					.then(returnedPerson => {
-						setPersons(
-							persons.map(person =>
-								person.id !== personId ? person : returnedPerson
-							)
-						);
-						setListToShow(
-							listToShow.map(person =>
-								person.id !== personId ? person : returnedPerson
-							)
-						);
-						resetDetails();
-					});
+				personService.updateNumber(personId, newPerson).then(returnedPerson => {
+					setPersons(
+						persons.map(person =>
+							person.id !== personId ? person : returnedPerson
+						)
+					);
+					setListToShow(
+						listToShow.map(person =>
+							person.id !== personId ? person : returnedPerson
+						)
+					);
+					resetDetails();
+				});
 			}
 		} else {
 			personService.addNewPerson(newPerson).then(returnedPerson => {
