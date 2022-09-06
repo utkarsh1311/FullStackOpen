@@ -2,19 +2,22 @@ const mongoose = require("mongoose");
 
 const url = process.env.MONGODB_URI;
 
-console.log("Connecting to", url);
-
-mongoose
-	.connect(url)
-	.then(() => {
-		console.log("connected to MongoDB");
-	})
-	.catch(e => console.log("Error connecting to MongoDB: ", e.message));
-
 const blogSchema = new mongoose.Schema({
-	title: String,
-	author: String,
-	url: String,
+	title: {
+		type: String,
+		required: true,
+		minlength: 5,
+	},
+	author: {
+		type: String,
+		required: true,
+		minlength: 5,
+	},
+	url: {
+		type: String,
+		required: true,
+		minlength: 4,
+	},
 	likes: Number,
 });
 
@@ -26,6 +29,4 @@ blogSchema.set("toJSON", {
 	},
 });
 
-const Blog = mongoose.model("Blog", blogSchema);
-
-module.exports = Blog;
+module.exports = mongoose.model("Blog", blogSchema);
