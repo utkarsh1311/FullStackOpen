@@ -40,6 +40,23 @@ test("a new blog is created", async () => {
 	expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
 });
 
+test("likes property defaults to 0 is missing", async () => {
+	let newBlog = {
+		title: "First class tests",
+		author: "Robert C. Martin",
+		url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
+	};
+
+	await api
+		.post("/api/blogs")
+		.send(newBlog)
+		.expect(201)
+		.expect("Content-Type", /application\/json/);
+
+	const updatedBlogs = await helper.blogsInDB();
+	expect(updatedBlogs.at(-1).likes).toBe(0);
+});
+
 afterAll(() => {
 	mongoose.connection.close();
 });
