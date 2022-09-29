@@ -57,6 +57,19 @@ test("likes property defaults to 0 is missing", async () => {
 	expect(updatedBlogs.at(-1).likes).toBe(0);
 });
 
+test("get 400 error is blog title or url is missing", async () => {
+	let newBlog = {
+		author: "Robert C. Martin",
+		likes: 10,
+	};
+
+	await api
+		.post("/api/blogs")
+		.send(newBlog)
+		.expect(400)
+		.expect("Content-Type", /application\/json/);
+});
+
 afterAll(() => {
 	mongoose.connection.close();
 });
