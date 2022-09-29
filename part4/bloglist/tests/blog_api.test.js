@@ -2,46 +2,44 @@ const app = require("../app");
 const supertest = require("supertest");
 const mongoose = require("mongoose");
 const api = supertest(app);
-
+const helper = require("./helper");
 const Blog = require("../models/blog");
-
-const blogs = [
-	{
-		title: "React patterns",
-		author: "Michael Chan",
-		url: "https://reactpatterns.com/",
-		likes: 7,
-	},
-	{
-		title: "Go To Statement Considered Harmful",
-		author: "Edsger W. Dijkstra",
-		url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
-		likes: 5,
-	},
-	{
-		title: "Canonical string reduction",
-		author: "Edsger W. Dijkstra",
-		url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
-		likes: 12,
-	},
-];
 
 beforeEach(async () => {
 	await Blog.deleteMany({});
-	const blogObjects = blogs.map(blog => new Blog(blog));
+	const blogObjects = helper.initialBlogs.map(blog => new Blog(blog));
 	const promiseArray = blogObjects.map(blog => blog.save());
 	await Promise.all(promiseArray);
 });
 
 test("get correct amount of blogs", async () => {
 	const response = await api.get("/api/blogs");
-	expect(response.body).toHaveLength(3);
+	expect(response.body).toHaveLength(helper.initialBlogs.length);
 });
 
 test("blog has property id", async () => {
-	const response = await Blog.find({});
-	expect(response[0]._id).toBeDefined();
+	const response = await helper.blogsInDB();
+	expect(response[0].id).toBeDefined();
 });
+
+test("a new blog is created", async () => {
+	let newBlog = {
+		title: "First class tests",
+		author: "Robert C. Martin",
+		url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
+		likes: 10,
+	};
+
+	await api
+		.post("/api/blogs")
+		.send(newBlog)
+		.expect(201)
+		.expect("Content-Type", /application\/json/);
+
+	const blogsAtEnd = await helper.blogsInDB();
+	expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
+});
+
 afterAll(() => {
 	mongoose.connection.close();
 });

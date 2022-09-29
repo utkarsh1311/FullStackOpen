@@ -12,15 +12,11 @@ blogsRouter.get("/:id", (req, res) => {
 		.catch(error => next(error));
 });
 
-blogsRouter.post("/", (req, res) => {
+blogsRouter.post("/", async (req, res) => {
 	const newBlog = new Blog(req.body);
 
-	newBlog
-		.save()
-		.then(result => {
-			res.status(201).json(result);
-		})
-		.catch(error => next(error));
+	const result = await newBlog.save();
+	res.status(201).json(result);
 });
 
 module.exports = blogsRouter;
