@@ -55,6 +55,7 @@ test("likes property defaults to 0 is missing", async () => {
 
 	const updatedBlogs = await helper.blogsInDB();
 	expect(updatedBlogs.at(-1).likes).toBe(0);
+	expect(updatedBlogs).toHaveLength(helper.initialBlogs.length + 1);
 });
 
 test("get 400 error is blog title or url is missing", async () => {
@@ -68,6 +69,9 @@ test("get 400 error is blog title or url is missing", async () => {
 		.send(newBlog)
 		.expect(400)
 		.expect("Content-Type", /application\/json/);
+
+	const blogsAtEnd = await helper.blogsInDB();
+	expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
 });
 
 afterAll(() => {
