@@ -74,6 +74,41 @@ test("get 400 error is blog title or url is missing", async () => {
 	expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
 });
 
+test("a blog can be deleted", async () => {
+	const blogsAtStart = await helper.blogsInDB();
+	const blogToDelete = blogsAtStart[0];
+
+	await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+	const blogsAtEnd = await helper.blogsInDB();
+	expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1);
+
+	const remainingBlogs = blogsAtEnd.map(b => b.id);
+	expect(remainingBlogs).not.toContain(blogToDelete.id);
+});
+
+test("blog with valid id can be updated", async () => {
+	let newBlog = {
+		title: "First class tests",
+		author: "Robert C. Martin",
+		url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
+		likes: 10,
+	};
+
+	const blogsAtStart = await helper.blogsInDB();
+	const blogToUpdate = blogsAtStart[0];
+
+	await api
+		.put(`/api/blogs/${blogToUpdate.id}`)
+		.send(newBlog)
+		.expect(200)
+		.expect("Content-Type", /application\/json/);
+
+	const blogsAtEnd = await helper.blogsInDB();
+	expect(blogsAtEnd[0]).toEqual({ ...newBlog, id: blogToUpdate.id });
+
+	expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
+}, 50000);
+
 afterAll(() => {
 	mongoose.connection.close();
 });
