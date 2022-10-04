@@ -17,6 +17,12 @@ usersRouter.post("/", async (req, res) => {
 		});
 	}
 
+	if (!username || !password) {
+		return res.status(400).json({
+			error: "username or password is missing",
+		});
+	}
+
 	if (username.length < 3) {
 		return res.status(400).json({
 			error: "username must be at least 3 characters long",

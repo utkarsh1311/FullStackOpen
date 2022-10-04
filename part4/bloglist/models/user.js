@@ -10,9 +10,11 @@ const userSchema = new mongoose.Schema({
 	},
 	name: {
 		type: String,
+	},
+	passwordHash: {
+		type: String,
 		required: true,
 	},
-	passwordHash: String,
 });
 
 userSchema.set("toJSON", {
