@@ -13,17 +13,9 @@ blogsRouter.get("/:id", async (req, res, next) => {
 	res.status(200).json(blog);
 });
 
-const getTokenFrom = req => {
-	const auth = req.get("authorization");
-	if (auth && auth.toLowerCase().startsWith("bearer")) {
-		return auth.substring(7);
-	}
-	return null;
-};
-
 blogsRouter.post("/", async (req, res) => {
 	const { title, author, url, likes, userId } = req.body;
-	const token = getTokenFrom(req);
+	const token = req.token;
 	const decodedToken = jwt.verify(token, process.env.SECRET);
 
 	if (!decodedToken.id) {
