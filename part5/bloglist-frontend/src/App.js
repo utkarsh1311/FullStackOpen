@@ -11,23 +11,36 @@ const App = () => {
 
 	useEffect(() => {
 		blogService.getAll().then(blogs => setBlogs(blogs));
-  }, []);
-  
-  const handleLogin = async (event) => {
-    event.preventDefault();
+	}, []);
 
-    try {
-      const user = await loginService.login({ username, password });
-      console.log(user);
-      setUser(user);
-      setUsername("");
-      setPassword("");
-    } catch (e) {
-      console.error("Invalid credentials");
-    }
+	useEffect(() => {
+		const loggedUserJSON = window.localStorage.getItem("loggedBlogAppUser");
+		if (loggedUserJSON) {
+			const user = JSON.parse(loggedUserJSON);
+			setUser(user);
+		}
+	}, []);
 
-    console.log("loggin in with", username, password);
-  }
+	const handleLogin = async event => {
+		event.preventDefault();
+
+		try {
+			const user = await loginService.login({ username, password });
+			setUser(user);
+			window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
+			setUsername("");
+			setPassword("");
+		} catch (e) {
+			console.error("Invalid credentials");
+		}
+
+		console.log("loggin in with", username, password);
+	};
+
+	const handleLogout = () => {
+		window.localStorage.clear();
+		setUser(null);
+	};
 
 	const loginForm = () => (
 		<form onSubmit={handleLogin}>
@@ -52,20 +65,25 @@ const App = () => {
 		</form>
 	);
 
-	const renderUserBlogs = () => (
-		<>
-      <h2>Blogs</h2>
-      <p>{user.name} is logged in</p>
-			{blogs.map(blog => (
-				<Blog
-					key={blog.id}
-					blog={blog}
-				/>
-			))}
-		</>
+	return (
+		<div>
+			{!user ? (
+				loginForm()
+			) : (
+				<>
+					<h2>Blogs</h2>
+					<p>{user.name} is logged in</p>
+					<button onClick={handleLogout}>logout</button>
+					{blogs.map(blog => (
+						<Blog
+							key={blog.id}
+							blog={blog}
+						/>
+					))}
+				</>
+			)}
+		</div>
 	);
-
-	return <div>{!user ? loginForm() : renderUserBlogs() }</div>;
 };
 
 export default App;
