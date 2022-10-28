@@ -19,7 +19,7 @@ blogsRouter.post("/", userExtractor, async (req, res) => {
 
 	const user = req.user;
 
-	if (!title || !author || !url || !userId) {
+	if (!title || !author || !url) {
 		return res.status(400).json({
 			error: "missing relevant information",
 		});
